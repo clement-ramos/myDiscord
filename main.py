@@ -23,13 +23,20 @@ class App(customtkinter.CTk):
         self.bg_image = customtkinter.CTkImage(Image.open(current_path + "/bg_gradient.jpg"), size=(self.width, self.height))
         self.bg_image_label = customtkinter.CTkLabel(self, image=self.bg_image).grid(row=0, column=0)
 
-        # ---------- Login Frame ----------
+        self.create_sign_in(current_path) #create ii and place it in the grid(show it)
+        self.create_sign_up(current_path) #create it but doesnt place it
+        self.create_main(current_path)
+ 
+
+
+    def create_sign_in(self, path):
+          # ---------- Login Frame ----------
         #Frame
         self.login_frame = customtkinter.CTkFrame(self, corner_radius=0)
         self.login_frame.grid(row=0, column=0, sticky="ns")
 
         #Logo
-        self.logo_image = customtkinter.CTkImage(Image.open(current_path + "/logo.png"), size=(128, 128))
+        self.logo_image = customtkinter.CTkImage(Image.open(path + "/logo.png"), size=(128, 128))
         self.logo_image_label = customtkinter.CTkLabel(self.login_frame, text="", image=self.logo_image).grid(row=0, column=0, columnspan = 2, pady = (30, 10))
 
         #Labels
@@ -50,6 +57,9 @@ class App(customtkinter.CTk):
         self.login_button = customtkinter.CTkButton(self.login_frame, text="Login", command=self.login_event, width=140)
         self.login_button.grid(row=5, column=1, padx=10, pady=(15, 15))
 
+
+    def create_sign_up(self, path):
+        
         # ---------- Sign-Up Frame ----------
 
         #Frame
@@ -57,7 +67,7 @@ class App(customtkinter.CTk):
         self.sign_frame.grid_columnconfigure(0, weight=1)
 
         #Logo
-        self.logo_image = customtkinter.CTkImage(Image.open(current_path + "/logo.png"), size=(128, 128))
+        self.logo_image = customtkinter.CTkImage(Image.open(path + "/logo.png"), size=(128, 128))
         self.logo_image_label = customtkinter.CTkLabel(self.sign_frame, text="", image=self.logo_image).grid(row=0, column=0, columnspan = 2, pady = (30, 10))
         
         #Labels
@@ -85,7 +95,9 @@ class App(customtkinter.CTk):
         #Buttons
         self.register_button = customtkinter.CTkButton(self.sign_frame, text="register", command=self.register_event, width=200)
         self.register_button.grid(row=8, column=0, padx=10, pady=(30, 15))
-
+    
+    
+    def create_main(self, path):
         # ---------- Main Frame ----------
 
         #Frame
@@ -95,6 +107,13 @@ class App(customtkinter.CTk):
         self.main_frame.grid_columnconfigure(0, weight=1)
         self.main_frame.grid_columnconfigure(1, weight=2)
         self.main_frame.grid_columnconfigure(2, weight=11)
+
+        self.create_nav_1(path)
+        self.create_nav_2()
+        self.create_chat(path)
+
+
+    def create_nav_1(self, path):
     
         # ---------- Nav 1 Frame ----------
         self.nav_1_frame = customtkinter.CTkFrame(self.main_frame, corner_radius=0)
@@ -106,7 +125,7 @@ class App(customtkinter.CTk):
 
         # 0 0 Home button that have to switch to friend mode 
 
-        self.home_btn_image = customtkinter.CTkImage(Image.open(current_path + "/logo.png"), size=(64, 64))
+        self.home_btn_image = customtkinter.CTkImage(Image.open(path + "/logo.png"), size=(64, 64))
         self.home_btn_button = customtkinter.CTkButton(self.nav_1_frame, height = 70, text="",fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.home_btn_image, command = self.test).grid(row=0, column=0, sticky="nsew")
        
         # 1 0 Server list 
@@ -121,10 +140,11 @@ class App(customtkinter.CTk):
         self.scrollable_label_button_frame.grid(row=1, column=0, padx=0, pady=0, sticky="nsew")
         
         for i in range(len(servers)):  # add items with images
-            self.scrollable_label_button_frame.add_item(f"{servers[i]}", image=customtkinter.CTkImage(Image.open(os.path.join(current_dir, "assets/", "chat_light.png"))))
+            self.scrollable_label_button_frame.add_item(f"{servers[i]}", image=customtkinter.CTkImage(Image.open(os.path.join(current_dir, "assets/", "globe.png"))))
      
         #-------------------------------------------------------------------------------
 
+    def create_nav_2(self):
 
         # ---------- Nav 2 Frame ----------
         self.nav_2_frame = customtkinter.CTkFrame(self.main_frame, corner_radius=0)
@@ -137,7 +157,8 @@ class App(customtkinter.CTk):
         
         # 0 1 Server name in server mode or add friend button in friend mode
 
-        customtkinter.CTkLabel(self.nav_2_frame, text="Server Name", font=customtkinter.CTkFont(size=20, weight="bold")).grid(row=0, column=1)
+        # by default add friend 
+        self.test = customtkinter.CTkLabel(self.nav_2_frame, text="Server Name", font=customtkinter.CTkFont(size=20, weight="bold")).grid(row=0, column=1)
 
         # en 1 1 friend list or channels list
 
@@ -150,8 +171,8 @@ class App(customtkinter.CTk):
         self.scrollable_label_button_frame = ScrollableButtons(self.nav_2_frame, width = 150, command=self.label_button_frame_event, corner_radius=0)
         self.scrollable_label_button_frame.grid(row=1, column=1, padx=0, pady=0, sticky="nsew")
         
-        for i in range(len(servers)):  # add items with images
-            self.scrollable_label_button_frame.add_item(f"{friends[i]}", image=customtkinter.CTkImage(Image.open(os.path.join(current_dir, "assets/", "chat_light.png"))))
+        for i in range(len(friends)):  # add items with images
+            self.scrollable_label_button_frame.add_item(f"{friends[i]}", image=customtkinter.CTkImage(Image.open(os.path.join(current_dir, "assets/", "user.png"))))
      
         #-------------------------------------------------------------------------------
 
@@ -161,19 +182,41 @@ class App(customtkinter.CTk):
         
         customtkinter.CTkLabel(self.nav_2_frame, text="parameter", font=customtkinter.CTkFont(size=20, weight="bold")).grid(row=2, column=1)
 
-
+    def create_chat(self, path):
+        
         # ---------- Chat Frame ----------
         self.chat_frame = customtkinter.CTkFrame(self.main_frame, corner_radius=0)
         self.chat_frame.grid(row=0, column=2, sticky="nsew") 
 
+        self.chat_frame.grid_columnconfigure(0, weight=5)
+        self.chat_frame.grid_columnconfigure(1, weight=1)
+        
+        self.chat_frame.grid_rowconfigure(0, weight=1)
+        self.chat_frame.grid_rowconfigure(1, weight=12)
+        self.chat_frame.grid_rowconfigure(2, weight=1)
         # 0 2 Channel using or friend talking to
 
         self.main_label = customtkinter.CTkLabel(self.chat_frame, text="CustoTkinter\nMain Page",font=customtkinter.CTkFont(size=20, weight="bold"))
-        self.main_label.grid(row=0, column=0, padx=30, pady=(30, 15))
+        self.main_label.grid(row=0, column=0, columnspan = 2, padx=30, pady= 10)
 
         # 1 2 Scrollable list of btn and chat with time posted
+        messages = ["Server1", "Server2","Server3", "Server4"]
 
+        # create scrollable label and button frame
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        self.scrollable_label_button_frame = ScrollableButtons(self.chat_frame, width = 700, command=self.label_button_frame_event, corner_radius=0)
+        self.scrollable_label_button_frame.grid(row=1, column=0, columnspan=2, padx=0, pady=0, sticky="nsew")
+        
+        for i in range(len(messages)):  # add items with images
+            self.scrollable_label_button_frame.add_item(f"{messages[i]}", image=customtkinter.CTkImage(Image.open(os.path.join(current_dir, "assets/", "globe.png"))))
+     
         # 2 2 Input zone 
+        self.text_entry = customtkinter.CTkEntry(self.chat_frame, width= 400, placeholder_text="CTkEntry").grid(row=2, column = 0, sticky = "e")
+
+
+        self.send_btn_image = customtkinter.CTkImage(Image.open(path + "/play.png"), size=(32, 32))
+        self.send_btn_button = customtkinter.CTkButton(self.chat_frame,  text="",fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.send_btn_image, command = self.test).grid(row=2, column=1, sticky = "e")
+       
 
     def login_event(self):
         print("Login pressed - username:", self.username_entry.get(), "password:", self.password_entry.get())
@@ -201,8 +244,9 @@ class App(customtkinter.CTk):
     def test(self):
         print(1)
 
-
     def label_button_frame_event(self, item):
+        self.nav_2_frame.grid_forget(self)
+        self.test = customtkinter.CTkLabel(self.nav_2_frame, text=item, font=customtkinter.CTkFont(size=20, weight="bold")).grid(row=0, column=1)
         print(f"label button frame clicked: {item}")
 
 
@@ -234,8 +278,6 @@ class ScrollableButtons(customtkinter.CTkScrollableFrame):
                 self.button_list.remove(button)
                 return
             
-            
-
 if __name__ == "__main__":
     app = App()
     app.mainloop()
