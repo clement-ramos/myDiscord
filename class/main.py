@@ -106,10 +106,10 @@ class App(customtkinter.CTk):
 
         #Buttons
         self.register_button = customtkinter.CTkButton(self.sign_frame, text="register", command=self.register_event, width=150)
-        self.register_button.grid(row=9, column=0, padx=10, pady=(30, 15))
+        self.register_button.grid(row=9, column=1, padx=10, pady=(30, 15))
 
         self.back_button = customtkinter.CTkButton(self.sign_frame, text="back", command=self.back_event, width=150)
-        self.back_button.grid(row=9, column=1, padx=10, pady=(30, 15))
+        self.back_button.grid(row=9, column=0, padx=10, pady=(30, 15))
 
         # ERROR LABEL
         self.error_label = customtkinter.CTkLabel(self.sign_frame, text=self.error_message_var, font=customtkinter.CTkFont(size=14, weight="bold"), text_color="red")
@@ -230,7 +230,7 @@ class App(customtkinter.CTk):
             self.scrollable_label_button_frame.add_item(f"{messages[i]}", image=customtkinter.CTkImage(Image.open(os.path.join(current_dir, "../assets/", "globe.png"))))
      
         # 2 2 Input zone 
-        self.text_entry = customtkinter.CTkEntry(self.chat_frame, width= 400, placeholder_text="CTkEntry").grid(row=2, column = 0, sticky = "e")
+        self.text_entry = customtkinter.CTkEntry(self.chat_frame, width= 400, placeholder_text="Chat").grid(row=2, column = 0, sticky = "e")
 
 
         self.send_btn_image = customtkinter.CTkImage(Image.open(path + "/play.png"), size=(32, 32))
