@@ -31,8 +31,8 @@ class App(customtkinter.CTk):
         self.bg_image = customtkinter.CTkImage(Image.open(current_path + "/bg_gradient.jpg"), size=(self.width, self.height))
         self.bg_image_label = customtkinter.CTkLabel(self, image=self.bg_image).grid(row=0, column=0)
 
-        self.mode = "server"
         self.statut = "inCall"
+        self.mode = "server"
         self.create_main(current_path)
  
 
@@ -147,7 +147,7 @@ class App(customtkinter.CTk):
         # 0 0 Home button that have to switch to friend mode 
 
         self.home_btn_image = customtkinter.CTkImage(Image.open(path + "/logo.png"), size=(64, 64))
-        self.home_btn_button = customtkinter.CTkButton(self.nav_1_frame, height = 70, text="",fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.home_btn_image, command = self.friend_mode).grid(row=0, column=0, sticky="nsew")
+        self.home_btn_button = customtkinter.CTkButton(self.nav_1_frame, height = 70, text="",fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.home_btn_image, command = self.home_mode).grid(row=0, column=0, sticky="nsew")
        
         # 1 0 Server list 
 
@@ -265,8 +265,24 @@ class App(customtkinter.CTk):
     def test(self):
         print(1)
 
+    def home_mode(self):
+        self.nav_2_frame.destroy()
+        
+        # ---------- Nav 2 Frame ----------
+        self.nav_2_frame = customtkinter.CTkFrame(self.main_frame, corner_radius=0)
+        self.nav_2_frame.grid(row=0, column=1, sticky="nsew") 
+
+        self.nav_2_frame.grid_columnconfigure(1, weight=1)
+        self.nav_2_frame.grid_rowconfigure(0, weight=1)
+        self.nav_2_frame.grid_rowconfigure(1, weight=12)
+        self.nav_2_frame.grid_rowconfigure(2, weight=1)
+
+
     def friend_mode(self):
-        self.mode = "friend"
+        pass
+
+    def server_mode(self):
+        pass
 
     def label_button_frame_event(self, item):
         self.nav_2_frame.grid_forget(self)
