@@ -31,8 +31,6 @@ class App(customtkinter.CTk):
         self.bg_image = customtkinter.CTkImage(Image.open(current_path + "/bg_gradient.jpg"), size=(self.width, self.height))
         self.bg_image_label = customtkinter.CTkLabel(self, image=self.bg_image).grid(row=0, column=0)
 
-        self.statut = "inCall"
-        self.mode = "server"
         self.create_main(current_path)
  
 
@@ -128,10 +126,12 @@ class App(customtkinter.CTk):
         self.main_frame.grid_columnconfigure(0, weight=1)
         self.main_frame.grid_columnconfigure(1, weight=2)
         self.main_frame.grid_columnconfigure(2, weight=11)
+        self.main_frame.grid_columnconfigure(3, weight=2)
 
         self.create_nav_1(path)
-        self.create_nav_2(path)
+        self.create_nav_channels(path)
         self.create_chat(path)
+        self.create_nav_friend(path)
 
 
     def create_nav_1(self, path):
@@ -165,67 +165,30 @@ class App(customtkinter.CTk):
      
         #-------------------------------------------------------------------------------
 
-    def create_nav_2(self, path):
+    def create_nav_channels(self, path):
 
         # ---------- Nav 2 Frame ----------
-        self.nav_2_frame = customtkinter.CTkFrame(self.main_frame, corner_radius=0)
-        self.nav_2_frame.grid(row=0, column=1, sticky="nsew") 
+        self.nav_channels_frame = customtkinter.CTkFrame(self.main_frame, corner_radius=0)
+        self.nav_channels_frame.grid(row=0, column=1, sticky="nsew") 
 
-        self.nav_2_frame.grid_columnconfigure(1, weight=1)
-        self.nav_2_frame.grid_rowconfigure(0, weight=1)
-        self.nav_2_frame.grid_rowconfigure(1, weight=12)
-        self.nav_2_frame.grid_rowconfigure(2, weight=1)
+        self.nav_channels_frame.grid_columnconfigure(1, weight=1)
+        self.nav_channels_frame.grid_rowconfigure(0, weight=1)
+        self.nav_channels_frame.grid_rowconfigure(1, weight=12)
         
-        if self.mode == "server":
+        # 0 1 Server name 
+        self.server_name_label = customtkinter.CTkLabel(self.nav_channels_frame, text="Channels", font=customtkinter.CTkFont(size=20, weight="bold")).grid(row=0, column=1)
+
+        # 1 1 channels list
+        #-------------------------------------------------------------------------------
+        # create scrollable label and button frame
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        self.scrollable_label_button_frame = ScrollableButtons(self.nav_channels_frame, width = 150, command=self.label_button_frame_event, corner_radius=0)
+        self.scrollable_label_button_frame.grid(row=1, column=1, padx=0, pady=0, sticky="nsew")
             
-            # 0 1 Server name 
-            self.server_name_label = customtkinter.CTkLabel(self.nav_2_frame, text="Server Name", font=customtkinter.CTkFont(size=20, weight="bold")).grid(row=0, column=1)
-
-
-            # 1 1 channels list
-            #-------------------------------------------------------------------------------
-
-            # create scrollable label and button frame
-            current_dir = os.path.dirname(os.path.abspath(__file__))
-            self.scrollable_label_button_frame = ScrollableButtons(self.nav_2_frame, width = 150, command=self.label_button_frame_event, corner_radius=0)
-            self.scrollable_label_button_frame.grid(row=1, column=1, padx=0, pady=0, sticky="nsew")
-            
-            self.scrollable_label_button_frame.add_item("Text", image=customtkinter.CTkImage(Image.open(os.path.join(current_dir, "../assets/", "comment-alt.png"))))
-            self.scrollable_label_button_frame.add_item("Vocal", image=customtkinter.CTkImage(Image.open(os.path.join(current_dir, "../assets/", "megaphone.png"))))
-
-            #-------------------------------------------------------------------------------
-
-        elif self.mode == "friend":
-            
-            # 0 1 friend add button
-            self.send_btn_image = customtkinter.CTkImage(Image.open(path + "/user-add.png"), size=(32, 32))
-            self.send_btn_button = customtkinter.CTkButton(self.nav_2_frame,  text="",fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.send_btn_image, command = self.test).grid(row=0, column=1, sticky = "nsew")
-       
-            # 1 1 friend list 
-
-            #-------------------------------------------------------------------------------
-
-            friends = ["Obsydh", "sebni","NaturallyGifted", "GOULOUGOULOU"]
-
-            # create scrollable label and button frame
-            current_dir = os.path.dirname(os.path.abspath(__file__))
-            self.scrollable_label_button_frame = ScrollableButtons(self.nav_2_frame, width = 150, command=self.label_button_frame_event, corner_radius=0)
-            self.scrollable_label_button_frame.grid(row=1, column=1, padx=0, pady=0, sticky="nsew")
-            
-            for i in range(len(friends)):  # add items with images
-                self.scrollable_label_button_frame.add_item(f"{friends[i]}", image=customtkinter.CTkImage(Image.open(os.path.join(current_dir, "../assets/", "user.png"))))
-        
-            #-------------------------------------------------------------------------------
-
-
-        if self.statut == "inCall":
-            self.send_btn_image = customtkinter.CTkImage(Image.open(path + "/call.png"), size=(32, 32))
-            self.send_btn_button = customtkinter.CTkButton(self.nav_2_frame,  text="",fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.send_btn_image, command = self.test).grid(row=2, column=1, sticky = "nsew")
-       
-            
-        # 2 1 Profil
-        customtkinter.CTkLabel(self.nav_2_frame, text="parameter", font=customtkinter.CTkFont(size=20, weight="bold")).grid(row=3, column=1)
-
+        self.scrollable_label_button_frame.add_item("Text", image=customtkinter.CTkImage(Image.open(os.path.join(current_dir, "../assets/", "comment-alt.png"))))
+        self.scrollable_label_button_frame.add_item("Vocal", image=customtkinter.CTkImage(Image.open(os.path.join(current_dir, "../assets/", "megaphone.png"))))
+        #-------------------------------------------------------------------------------
+   
     def create_chat(self, path):
         
         # ---------- Chat Frame ----------
@@ -241,7 +204,7 @@ class App(customtkinter.CTk):
 
         # 0 2 text channel or friend name
 
-        self.main_label = customtkinter.CTkLabel(self.chat_frame, text="CustoTkinter",font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.main_label = customtkinter.CTkLabel(self.chat_frame, text="Chat",font=customtkinter.CTkFont(size=20, weight="bold"))
         self.main_label.grid(row=0, column=0, columnspan = 2, padx=30, pady= 10)
 
         # 1 2 Scrollable list of btn and chat with time posted
@@ -256,26 +219,60 @@ class App(customtkinter.CTk):
             self.scrollable_label_button_frame.add_item(f"{messages[i]}", image=customtkinter.CTkImage(Image.open(os.path.join(current_dir, "../assets/", "globe.png"))))
      
         # 2 2 Input zone 
-        self.text_entry = customtkinter.CTkEntry(self.chat_frame, width= 400, placeholder_text="Chat").grid(row=2, column = 0, sticky = "e")
-
+        self.text_entry = customtkinter.CTkEntry(self.chat_frame, width= 500, placeholder_text="Chat").grid(row=2, column = 0, sticky = "e")
 
         self.send_btn_image = customtkinter.CTkImage(Image.open(path + "/play.png"), size=(32, 32))
-        self.send_btn_button = customtkinter.CTkButton(self.chat_frame,  text="",fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.send_btn_image, command = self.test).grid(row=2, column=1, sticky = "e")
+        self.send_btn_button = customtkinter.CTkButton(self.chat_frame,  text="",fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.send_btn_image, command = self.test).grid(row=2, column=1, sticky = "ns")
+
+    def create_nav_friend(self, path):
+        # ---------- Nav 2 Frame ----------
+        self.nav_friend_frame = customtkinter.CTkFrame(self.main_frame, corner_radius=0)
+        self.nav_friend_frame.grid(row=0, column=3, sticky="nsew") 
+
+        self.nav_friend_frame.grid_columnconfigure(1, weight=1)
+        self.nav_friend_frame.grid_rowconfigure(0, weight=1)
+        self.nav_friend_frame.grid_rowconfigure(1, weight=12)
+        self.nav_friend_frame.grid_rowconfigure(2, weight=1)
+
+        # 0 1 friend add button
+        self.send_btn_image = customtkinter.CTkImage(Image.open(path + "/user-add.png"), size=(32, 32))
+        self.send_btn_button = customtkinter.CTkButton(self.nav_friend_frame,  text="",fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.send_btn_image, command = self.test).grid(row=0, column=1, sticky = "nsew")
        
+        # 1 1 friend list 
+
+        #-------------------------------------------------------------------------------
+
+        friends = ["Obsydh", "sebni","NaturallyGifted", "GOULOUGOULOU"]
+
+        # create scrollable label and button frame
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        self.scrollable_label_button_frame = ScrollableButtons(self.nav_friend_frame, width = 150, command=self.label_button_frame_event, corner_radius=0)
+        self.scrollable_label_button_frame.grid(row=1, column=1, padx=0, pady=0, sticky="nsew")
+            
+        for i in range(len(friends)):  # add items with images
+            self.scrollable_label_button_frame.add_item(f"{friends[i]}", image=customtkinter.CTkImage(Image.open(os.path.join(current_dir, "../assets/", "user.png"))))
+        
+        #-------------------------------------------------------------------------------
+        
+        self.send_btn_image = customtkinter.CTkImage(Image.open(path + "/call.png"), size=(32, 32))
+        self.send_btn_button = customtkinter.CTkButton(self.nav_friend_frame,  text="",fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.send_btn_image, command = self.test).grid(row=2, column=1, sticky = "nsew")
+       
+ 
+
     def test(self):
         print(1)
 
     def home_mode(self):
-        self.nav_2_frame.destroy()
+        self.nav_channels_frame.destroy()
         
         # ---------- Nav 2 Frame ----------
-        self.nav_2_frame = customtkinter.CTkFrame(self.main_frame, corner_radius=0)
-        self.nav_2_frame.grid(row=0, column=1, sticky="nsew") 
+        self.nav_channels_frame = customtkinter.CTkFrame(self.main_frame, corner_radius=0)
+        self.nav_channels_frame.grid(row=0, column=1, sticky="nsew") 
 
-        self.nav_2_frame.grid_columnconfigure(1, weight=1)
-        self.nav_2_frame.grid_rowconfigure(0, weight=1)
-        self.nav_2_frame.grid_rowconfigure(1, weight=12)
-        self.nav_2_frame.grid_rowconfigure(2, weight=1)
+        self.nav_channels_frame.grid_columnconfigure(1, weight=1)
+        self.nav_channels_frame.grid_rowconfigure(0, weight=1)
+        self.nav_channels_frame.grid_rowconfigure(1, weight=12)
+        self.nav_channels_frame.grid_rowconfigure(2, weight=1)
 
 
     def friend_mode(self):
@@ -285,8 +282,8 @@ class App(customtkinter.CTk):
         pass
 
     def label_button_frame_event(self, item):
-        self.nav_2_frame.grid_forget(self)
-        self.test = customtkinter.CTkLabel(self.nav_2_frame, text=item, font=customtkinter.CTkFont(size=20, weight="bold")).grid(row=0, column=1)
+        self.nav_channels_frame.grid_forget(self)
+        self.test = customtkinter.CTkLabel(self.nav_channels_frame, text=item, font=customtkinter.CTkFont(size=20, weight="bold")).grid(row=0, column=1)
         print(f"label button frame clicked: {item}")
 
     def login_event(self):
