@@ -1,3 +1,3 @@
 # myDiscord
 
-![[Pasted image 20230330124818.png]]
+<img width="700" src="DB_Plan/DB_Discord.png">
