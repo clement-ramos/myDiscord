@@ -32,9 +32,6 @@ class App(customtkinter.CTk):
         self.bg_image_label = customtkinter.CTkLabel(self, image=self.bg_image).grid(row=0, column=0)
 
         self.create_main(current_path)
- 
-
-
     def create_sign_in(self, path):
         # ---------- Login Frame ----------
         #Frame
