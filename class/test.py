@@ -34,9 +34,6 @@ class App(customtkinter.CTk):
         self.mode = "server"
         self.statut = "inCall"
         self.create_main(current_path)
- 
-
-
     def create_sign_in(self, path):
         # ---------- Login Frame ----------
         #Frame

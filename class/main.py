@@ -31,11 +31,9 @@ class App(customtkinter.CTk):
         self.bg_image = customtkinter.CTkImage(Image.open(current_path + "/bg_gradient.jpg"), size=(self.width, self.height))
         self.bg_image_label = customtkinter.CTkLabel(self, image=self.bg_image).grid(row=0, column=0)
 
-        self.create_sign_in(current_path)
-        self.create_sign_up(current_path)
+        # self.create_sign_in(current_path)
+        # self.create_sign_up(current_path)
         self.create_main(current_path)
- 
-
 
     def create_sign_in(self, path):
         # ---------- Login Frame ----------
@@ -121,6 +119,8 @@ class App(customtkinter.CTk):
 
         #Frame
         self.main_frame = customtkinter.CTkFrame(self, corner_radius=0)
+        self.main_frame.grid(row=0, column=0, sticky="nsew")
+
 
         self.main_frame.grid_rowconfigure(0, weight=1)
         self.main_frame.grid_columnconfigure(0, weight=1)
@@ -130,7 +130,6 @@ class App(customtkinter.CTk):
         self.create_nav_1(path)
         self.create_nav_2()
         self.create_chat(path)
-
 
     def create_nav_1(self, path):
     
@@ -207,8 +206,9 @@ class App(customtkinter.CTk):
         self.chat_frame = customtkinter.CTkFrame(self.main_frame, corner_radius=0)
         self.chat_frame.grid(row=0, column=2, sticky="nsew") 
 
-        self.chat_frame.grid_columnconfigure(0, weight=5)
-        self.chat_frame.grid_columnconfigure(1, weight=1)
+        self.chat_frame.grid_columnconfigure(0, weight=1)
+        self.chat_frame.grid_columnconfigure(1, weight=5)
+        self.chat_frame.grid_columnconfigure(2, weight=1)
         
         self.chat_frame.grid_rowconfigure(0, weight=1)
         self.chat_frame.grid_rowconfigure(1, weight=12)
@@ -216,25 +216,25 @@ class App(customtkinter.CTk):
         # 0 2 Channel using or friend talking to
 
         self.main_label = customtkinter.CTkLabel(self.chat_frame, text="CustoTkinter",font=customtkinter.CTkFont(size=20, weight="bold"))
-        self.main_label.grid(row=0, column=0, columnspan = 2, padx=30, pady= 10)
+        self.main_label.grid(row=0, column=0, columnspan = 3, padx=30, pady= 10)
 
         # 1 2 Scrollable list of btn and chat with time posted
         messages = ["Server1", "Server2","Server3", "Server4"]
 
         # create scrollable label and button frame
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        self.scrollable_label_button_frame = ScrollableButtons(self.chat_frame, width = 700, command=self.label_button_frame_event, corner_radius=0)
-        self.scrollable_label_button_frame.grid(row=1, column=0, columnspan=2, padx=0, pady=0, sticky="nsew")
+        self.scrollable_label_button_frame = ScrollableLabelButtonFrame(self.chat_frame, width = 100, command=self.label_button_frame_event, corner_radius=0)
+        self.scrollable_label_button_frame.grid(row=1, column=0, columnspan = 3, padx=0, pady=0, sticky="nsew")
         
         for i in range(len(messages)):  # add items with images
-            self.scrollable_label_button_frame.add_item(f"{messages[i]}", image=customtkinter.CTkImage(Image.open(os.path.join(current_dir, "../assets/", "globe.png"))))
+            self.scrollable_label_button_frame.add_item(f"{messages[i]}")
      
         # 2 2 Input zone 
-        self.text_entry = customtkinter.CTkEntry(self.chat_frame, width= 400, placeholder_text="Chat").grid(row=2, column = 0, sticky = "e")
+        self.text_entry = customtkinter.CTkEntry(self.chat_frame, width= 400, placeholder_text="Chat").grid(row=2, column = 0, columnspan = 2, sticky = "ew")
 
 
         self.send_btn_image = customtkinter.CTkImage(Image.open(path + "/play.png"), size=(32, 32))
-        self.send_btn_button = customtkinter.CTkButton(self.chat_frame,  text="",fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.send_btn_image, command = self.test).grid(row=2, column=1, sticky = "e")
+        self.send_btn_button = customtkinter.CTkButton(self.chat_frame,  text="",fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.send_btn_image, command = self.test).grid(row=2, column=2, sticky = "nsew")
        
     def test(self):
         print(1)
@@ -394,9 +394,10 @@ class ScrollableButtons(customtkinter.CTkScrollableFrame):
     def add_item(self, item, image=None):
 
         button = customtkinter.CTkButton(self, corner_radius=0, height=40, border_spacing=10, text=item,
-                                                   fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"),
-                                                   image=image, anchor="w")
-        
+                                         fg_color="transparent", text_color=("gray10", "gray90"),
+                                         hover_color=("gray70", "gray30"),
+                                         image=image, anchor="w")
+
         if self.command is not None:
             button.configure(command=lambda: self.command(item))
 
@@ -409,7 +410,37 @@ class ScrollableButtons(customtkinter.CTkScrollableFrame):
                 button.destroy()
                 self.button_list.remove(button)
                 return
-       
+
+
+class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
+    def __init__(self, master, command=None, **kwargs):
+        super().__init__(master, **kwargs)
+        self.grid_columnconfigure(0, weight=1)
+
+        self.command = command
+        self.radiobutton_variable = customtkinter.StringVar()
+        self.label_list = []
+        self.button_list = []
+
+    def add_item(self, item, image=None):
+        label = customtkinter.CTkLabel(self, text=item, image=image, compound="left", padx=5, anchor="w", width=680)
+        button = customtkinter.CTkButton(self, text="Marin clement:", width=100, height=24)
+        if self.command is not None:
+            button.configure(command=lambda: self.command(item))
+        label.grid(row=len(self.label_list), column=1, pady=(0, 10))
+        button.grid(row=len(self.button_list), column=0, pady=(0, 10), padx=5, sticky="w")
+        self.label_list.append(label)
+        self.button_list.append(button)
+
+    def remove_item(self, item):
+        for label, button in zip(self.label_list, self.button_list):
+            if item == label.cget("text"):
+                label.destroy()
+                button.destroy()
+                self.label_list.remove(label)
+                self.button_list.remove(button)
+                return
+
 
 if __name__ == "__main__":
     app = App()
