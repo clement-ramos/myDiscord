@@ -6,6 +6,8 @@ import bcrypt
 import settings
 from datetime import datetime
 import re
+import random
+from datetime import datetime
 
 customtkinter.set_appearance_mode("dark")
 
@@ -25,6 +27,10 @@ class App(customtkinter.CTk):
         # ERROR
         self.error_message_var = ""
 
+        # VARIABLES
+        self.current_server = None
+        self.current_channel = None
+
         # load and create background image
         current_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../assets/")
 
@@ -32,6 +38,7 @@ class App(customtkinter.CTk):
         self.bg_image_label = customtkinter.CTkLabel(self, image=self.bg_image).grid(row=0, column=0)
 
         self.create_main(current_path)
+
     def create_sign_in(self, path):
         # ---------- Login Frame ----------
         #Frame
@@ -205,15 +212,16 @@ class App(customtkinter.CTk):
         self.main_label.grid(row=0, column=0, columnspan = 2, padx=30, pady= 10)
 
         # 1 2 Scrollable list of btn and chat with time posted
-        messages = ["Server1", "Server2","Server3", "Server4"]
+        # create random messages
+        messages = ["Hello", "How are you ?", "I'm fine", "What's up ?", "Nothing", "I'm bored", "Me too", "Let's go to the cinema", "Ok", "See you later", "Bye"] * 10
 
         # create scrollable label and button frame
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        self.scrollable_label_button_frame = ScrollableButtons(self.chat_frame, width = 700, command=self.label_button_frame_event, corner_radius=0)
-        self.scrollable_label_button_frame.grid(row=1, column=0, columnspan=2, padx=0, pady=0, sticky="nsew")
-        
+        self.scrollable_label_button_frame = ScrollableChat(self.chat_frame, width=100, command=self.label_button_frame_event, corner_radius=0)
+        self.scrollable_label_button_frame.grid(row=1, column=0, columnspan=3, padx=0, pady=0, sticky="nsew")
+
         for i in range(len(messages)):  # add items with images
-            self.scrollable_label_button_frame.add_item(f"{messages[i]}", image=customtkinter.CTkImage(Image.open(os.path.join(current_dir, "../assets/", "globe.png"))))
+            self.scrollable_label_button_frame.add_item(f"{messages[i]}")
      
         # 2 2 Input zone 
         self.text_entry = customtkinter.CTkEntry(self.chat_frame, width= 500, placeholder_text="Chat").grid(row=2, column = 0, sticky = "e")
@@ -448,7 +456,51 @@ class ScrollableButtons(customtkinter.CTkScrollableFrame):
                 button.destroy()
                 self.button_list.remove(button)
                 return
-       
+
+
+class ScrollableChat(customtkinter.CTkScrollableFrame):
+    def __init__(self, master, command=None, **kwargs):
+        super().__init__(master, **kwargs)
+        self.grid_columnconfigure(0, weight=1)
+
+        self.command = command
+        self.radiobutton_variable = customtkinter.StringVar()
+        self.label_list = []
+        self.button_list = []
+
+    def add_item(self, item, image=None):
+        button = customtkinter.CTkButton(self, text=f"{self.return_current_time()} | {self.random_username()} :", width=100, height=24, fg_color=self.random_color(), text_color="black", hover_color="white",
+                                        anchor="w", border_spacing=5)
+        label = customtkinter.CTkLabel(self, text=item, image=image, compound="left", padx=5, anchor="w", width=650)
+        if self.command is not None:
+            button.configure(command=lambda: self.command(item))
+        label.grid(row=len(self.label_list), column=2, pady=(0, 10))
+        button.grid(row=len(self.button_list), column=1, pady=(0, 10), padx=5, sticky="w")
+        self.label_list.append(label)
+        self.button_list.append(button)
+
+    def remove_item(self, item):
+        for label, button in zip(self.label_list, self.button_list):
+            if item == label.cget("text"):
+                label.destroy()
+                button.destroy()
+                self.label_list.remove(label)
+                self.button_list.remove(button)
+                return
+
+    def random_color(self):
+        # return pastel color
+        return "#%02X%02X%02X" % (random.randint(128, 255), random.randint(128, 255), random.randint(128, 255))
+
+    def random_username(self):
+        return random.choice(["Marin", "Clement", "Loris", "Maxime", "Amine", "Youssef", "Raphael", "Romain", "Thibault", "Vincent", "Antoine", "Ludovic", "Maxence",
+                              "Cedric", "Nicolas", "Julien", "Paul", "Alex", "Evan", "Jordan", "Alexandre", "Bastien", "Florian", "Jeremy", "Mathieu", "Nicolas",
+                              "Valentin", "Adrien", "Alexis", "Benjamin", "Damien", "Dylan", "Edouard", "Emile", "Evan", "Gabriel", "Gauthier", "Guillaume",
+                              "Jean", "Jean-Baptiste", "Julien", "Kevin", "Louis", "Lucas", "Mathieu", "Mathis", "Matthieu", "Maxime", "Maximilien", "Maxime",
+                              "Michael", "Mickael", "Nathan", "Nicolas", "Noe", "Noah", "Olivier", "Oscar", "Quentin", "Remy", "Robin", "Thomas", "Victor", "William"])
+
+    def return_current_time(self):
+        return datetime.now().strftime("%H:%M")
 
 if __name__ == "__main__":
     app = App()
