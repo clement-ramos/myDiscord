@@ -1,4 +1,5 @@
 from datetime import datetime
+
 import settings
 
 
@@ -35,4 +36,3 @@ class Message:
         settings.cursor.execute(sql, val)
         settings.db.commit()
         print(settings.cursor.rowcount, "record(s) affected", datetime.now())
-

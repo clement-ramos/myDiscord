@@ -1,10 +1,11 @@
+from datetime import datetime
+
 import settings
-from server import Server
 from channel import Channel
 from message import Message
-from user import User
 from role import Role
-from datetime import datetime
+from server import Server
+from user import User
 
 
 class BackMain:
@@ -20,7 +21,7 @@ class BackMain:
         self.roles = []
 
     # Server methods (get, update, delete) #
-    def create_server(self, name, roles, owner_id, created_at=None): # create server
+    def create_server(self, name, roles, owner_id, created_at=None):  # create server
         # create server
         sql = "INSERT INTO servers (owner_id, name, created_at) VALUES (%s, %s, %s)"
         val = (owner_id, name, created_at)
@@ -129,7 +130,7 @@ class BackMain:
         for row in result:
             self.roles.append(Role(row[0], row[1], row[2], row[3]))
 
-    def create_role(self, name, color, server_id, role_id ,created_at=None):
+    def create_role(self, name, color, server_id, role_id, created_at=None):
         # create new role
         sql = "INSERT INTO userroles (name, color, server_id, role_id, created_at) VALUES (%s, %s, %s, %s, %s)"
         val = (name, color, server_id, role_id, created_at)
@@ -194,7 +195,7 @@ class BackMain:
         settings.cursor.execute(sql, val)
         settings.db.commit()
         print(settings.cursor.rowcount, "record(s) inserted", datetime.now())
-        self.users.append(User(settings.cursor.lastrowid,username, password, email))
+        self.users.append(User(settings.cursor.lastrowid, username, password, email))
 
     def delete_user(self, user_id):
         # delete user
